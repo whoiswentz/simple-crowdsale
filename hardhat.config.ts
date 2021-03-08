@@ -1,11 +1,9 @@
 import "@nomiclabs/hardhat-waffle"
 import '@typechain/hardhat';
+import "hardhat-jest-plugin";
 
 import { HardhatUserConfig } from "hardhat/types";
 
-/**
- * @type import('hardhat/config').HardhatUserConfig
- */
 const config: HardhatUserConfig = {
   solidity: {
     compilers: [{ version: "0.7.3", settings: {} }]
