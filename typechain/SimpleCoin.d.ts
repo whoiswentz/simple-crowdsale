@@ -23,24 +23,45 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface SimpleCoinInterface extends ethers.utils.Interface {
   functions: {
+    "allowance(address,address)": FunctionFragment;
+    "authorize(address,uint256)": FunctionFragment;
     "coinBalance(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
+    "transferFrom(address,address,uint256)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "allowance",
+    values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "authorize",
+    values: [string, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "coinBalance", values: [string]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "transfer",
     values: [string, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "transferFrom",
+    values: [string, string, BigNumberish]
+  ): string;
 
+  decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "authorize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "coinBalance",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "transfer", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "transferFrom",
+    data: BytesLike
+  ): Result;
 
   events: {
     "Transfer(address,address,uint256)": EventFragment;
@@ -93,6 +114,30 @@ export class SimpleCoin extends Contract {
   interface: SimpleCoinInterface;
 
   functions: {
+    allowance(
+      arg0: string,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    "allowance(address,address)"(
+      arg0: string,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    authorize(
+      _authorizedAccount: string,
+      _allowance: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "authorize(address,uint256)"(
+      _authorizedAccount: string,
+      _allowance: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     coinBalance(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     "coinBalance(address)"(
@@ -115,7 +160,45 @@ export class SimpleCoin extends Contract {
       _amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    transferFrom(
+      _from: string,
+      _to: string,
+      _amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "transferFrom(address,address,uint256)"(
+      _from: string,
+      _to: string,
+      _amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
   };
+
+  allowance(
+    arg0: string,
+    arg1: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "allowance(address,address)"(
+    arg0: string,
+    arg1: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  authorize(
+    _authorizedAccount: string,
+    _allowance: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "authorize(address,uint256)"(
+    _authorizedAccount: string,
+    _allowance: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   coinBalance(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -140,7 +223,45 @@ export class SimpleCoin extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  transferFrom(
+    _from: string,
+    _to: string,
+    _amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "transferFrom(address,address,uint256)"(
+    _from: string,
+    _to: string,
+    _amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   callStatic: {
+    allowance(
+      arg0: string,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "allowance(address,address)"(
+      arg0: string,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    authorize(
+      _authorizedAccount: string,
+      _allowance: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "authorize(address,uint256)"(
+      _authorizedAccount: string,
+      _allowance: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     coinBalance(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "coinBalance(address)"(
@@ -163,6 +284,20 @@ export class SimpleCoin extends Contract {
       _amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    transferFrom(
+      _from: string,
+      _to: string,
+      _amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "transferFrom(address,address,uint256)"(
+      _from: string,
+      _to: string,
+      _amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
   };
 
   filters: {
@@ -177,6 +312,30 @@ export class SimpleCoin extends Contract {
   };
 
   estimateGas: {
+    allowance(
+      arg0: string,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "allowance(address,address)"(
+      arg0: string,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    authorize(
+      _authorizedAccount: string,
+      _allowance: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "authorize(address,uint256)"(
+      _authorizedAccount: string,
+      _allowance: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     coinBalance(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "coinBalance(address)"(
@@ -199,9 +358,47 @@ export class SimpleCoin extends Contract {
       _amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    transferFrom(
+      _from: string,
+      _to: string,
+      _amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "transferFrom(address,address,uint256)"(
+      _from: string,
+      _to: string,
+      _amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    allowance(
+      arg0: string,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "allowance(address,address)"(
+      arg0: string,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    authorize(
+      _authorizedAccount: string,
+      _allowance: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "authorize(address,uint256)"(
+      _authorizedAccount: string,
+      _allowance: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     coinBalance(
       arg0: string,
       overrides?: CallOverrides
@@ -223,6 +420,20 @@ export class SimpleCoin extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "transfer(address,uint256)"(
+      _to: string,
+      _amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    transferFrom(
+      _from: string,
+      _to: string,
+      _amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "transferFrom(address,address,uint256)"(
+      _from: string,
       _to: string,
       _amount: BigNumberish,
       overrides?: Overrides

@@ -11,11 +11,12 @@ describe('SimpleCoint', () => {
     let owner: SignerWithAddress
     let addr1: SignerWithAddress
     let addr2: SignerWithAddress
+    let addr3: SignerWithAddress
 
     beforeEach(async () => {
-        [owner, addr1, addr2] = await ethers.getSigners()
+        [owner, addr1, addr2, addr3] = await ethers.getSigners()
         SimpleCoin = await ethers.getContractFactory('SimpleCoin')
-        contract = await SimpleCoin.deploy(1000)
+        contract = await SimpleCoin.deploy(1000000)
     })
 
     describe('Deployment', () => {
@@ -55,6 +56,42 @@ describe('SimpleCoint', () => {
             //expect(tx.from).toEqual(owner.address)
             //expect(tx.to).toEqual(addr2.address)
             //expect(tx.value.toNumber()).toEqual(10)
+        })
+    })
+
+    describe('Allowance', () => {
+        test('should give allowance to addr2 through addr1', async () => {
+            await contract.connect(addr1).authorize(addr2.address, 1000)
+
+            const allowance = await contract.allowance(addr1.address, addr2.address)
+            const allowanceAmmount = await allowance.toNumber()
+
+            expect(allowanceAmmount).toEqual(1000)
+        })
+
+        test('should permit addr2 transfer from addr1 to addr3', async () => {
+            await contract.connect(owner).transfer(addr1.address, 1000)
+            await contract.connect(owner).transfer(addr2.address, 1000)
+            await contract.connect(owner).transfer(addr3.address, 1000)
+
+            await contract.connect(addr1).authorize(addr2.address, 1000)
+
+            const allowance = await contract.allowance(addr1.address, addr2.address)
+            const allowanceAmmount = await allowance.toNumber()
+
+            expect(allowanceAmmount).toEqual(1000)
+
+            await contract.connect(addr2).transferFrom(addr1.address, addr3.address, 100)
+
+            const allowanceAddr1Addr2 = await contract.allowance(addr1.address, addr2.address)
+            const allowanceAddr1Addr2Ammount = await allowanceAddr1Addr2.toNumber()       
+
+            expect(allowanceAddr1Addr2Ammount).toEqual(900)
+
+            const addr3Balance = await contract.coinBalance(addr3.address)
+            const addr3BalanceAmount = await addr3Balance.toNumber()
+
+            expect(addr3BalanceAmount).toEqual(1100)
         })
     })
 })
