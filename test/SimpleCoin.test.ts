@@ -1,12 +1,11 @@
-import { TransactionDescription } from "@ethersproject/abi"
 import { BigNumber } from "@ethersproject/bignumber"
-import { Contract, ContractFactory } from "@ethersproject/contracts"
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
 import { ethers } from "hardhat"
 
-describe('SimpleCoint', () => {
-    let SimpleCoin: ContractFactory
-    let contract: Contract
+import { SimpleCoin__factory, SimpleCoin } from '../typechain'
+
+describe('SimpleCoin Contract', () => {
+    let contract: SimpleCoin
 
     let owner: SignerWithAddress
     let addr1: SignerWithAddress
@@ -15,25 +14,24 @@ describe('SimpleCoint', () => {
 
     beforeEach(async () => {
         [owner, addr1, addr2, addr3] = await ethers.getSigners()
-        SimpleCoin = await ethers.getContractFactory('SimpleCoin')
-        contract = await SimpleCoin.deploy(1000000)
+        contract = await new SimpleCoin__factory(owner).deploy(10000000)
     })
 
-    describe('Deployment', () => {
+    describe('#constructor', () => {
         test('should be deployed successfuly', async () => {
             expect(contract).toBeDefined()
         })
 
         test('should be deployed on the owner address', async () => {
-            const contractOwner = await contract.owner();
+            const contractOwner = await contract.owner()
             const ownerAddress = owner.address
 
             expect(contractOwner).toEqual(ownerAddress)
         })
     })
 
-    describe('Tranfer', () => {
-        test('should\'t transfer because sender doesn\'t have coinBalance', async () => {
+    describe('#tranfer', () => {
+        test('should not transfer because sender doesn\'t have coinBalance', async () => {
             let addr2Balance: BigNumber = BigNumber.from("0")
 
             try {
@@ -51,15 +49,10 @@ describe('SimpleCoint', () => {
             addr2Balance = await contract.coinBalance(addr2.address)
 
             expect(addr2Balance.toNumber()).toEqual(10)
-
-            // Asserting the emmited event
-            //expect(tx.from).toEqual(owner.address)
-            //expect(tx.to).toEqual(addr2.address)
-            //expect(tx.value.toNumber()).toEqual(10)
         })
     })
 
-    describe('Allowance', () => {
+    describe('#allowance', () => {
         test('should give allowance to addr2 through addr1', async () => {
             await contract.connect(addr1).authorize(addr2.address, 1000)
 
@@ -68,7 +61,9 @@ describe('SimpleCoint', () => {
 
             expect(allowanceAmmount).toEqual(1000)
         })
+    })
 
+    describe('#transferFrom', () => {
         test('should permit addr2 transfer from addr1 to addr3', async () => {
             await contract.connect(owner).transfer(addr1.address, 1000)
             await contract.connect(owner).transfer(addr2.address, 1000)
@@ -92,6 +87,26 @@ describe('SimpleCoint', () => {
             const addr3BalanceAmount = await addr3Balance.toNumber()
 
             expect(addr3BalanceAmount).toEqual(1100)
+        })
+    })
+
+    describe('#mint', () => {
+        test('should not mint token, because the caller isn\'t the owner', async () => {
+            try {
+                await contract.connect(addr1).mint(addr2.address, 1000000)
+            } catch (error) {
+                expect(error.message).toEqual(
+                    'VM Exception while processing transaction: revert Only owner can call mint'
+                )
+            }
+        })
+
+        test('should mint token, the caller is the contract owner', async () => {
+            await contract.mint(addr2.address, 1000000)
+
+            const addr2Balance = await (await contract.coinBalance(addr2.address)).toNumber()
+
+            expect(addr2Balance).toEqual(1000000)
         })
     })
 })

@@ -9,9 +9,16 @@ contract SimpleCoin {
 
     event Transfer(address indexed from, address indexed to, uint256 value);
 
+    modifier onlyOwner {
+        if (msg.sender != owner) {
+            revert("Only owner can call mint");
+        }
+        _;
+    }
+
     constructor(uint256 _initialSupply) {
         owner = msg.sender;
-        coinBalance[msg.sender] = _initialSupply;
+        mint(msg.sender, _initialSupply);
     }
 
     function transfer(address _to, uint256 _amount) public {
@@ -46,5 +53,11 @@ contract SimpleCoin {
         emit Transfer(_from, _to, _amount);
 
         return true;
+    }
+
+    function mint(address _recipient, uint256 _mintedAmount) public onlyOwner {
+        coinBalance[_recipient] += _mintedAmount;
+
+        emit Transfer(msg.sender, _recipient, _mintedAmount);
     }
 }

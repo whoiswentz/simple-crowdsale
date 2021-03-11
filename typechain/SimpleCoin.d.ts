@@ -26,6 +26,7 @@ interface SimpleCoinInterface extends ethers.utils.Interface {
     "allowance(address,address)": FunctionFragment;
     "authorize(address,uint256)": FunctionFragment;
     "coinBalance(address)": FunctionFragment;
+    "mint(address,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
@@ -40,6 +41,10 @@ interface SimpleCoinInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "coinBalance", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "mint",
+    values: [string, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "transfer",
@@ -56,6 +61,7 @@ interface SimpleCoinInterface extends ethers.utils.Interface {
     functionFragment: "coinBalance",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "transfer", data: BytesLike): Result;
   decodeFunctionResult(
@@ -145,6 +151,18 @@ export class SimpleCoin extends Contract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    mint(
+      _recipient: string,
+      _mintedAmount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "mint(address,uint256)"(
+      _recipient: string,
+      _mintedAmount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     "owner()"(overrides?: CallOverrides): Promise<[string]>;
@@ -207,6 +225,18 @@ export class SimpleCoin extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  mint(
+    _recipient: string,
+    _mintedAmount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "mint(address,uint256)"(
+    _recipient: string,
+    _mintedAmount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   owner(overrides?: CallOverrides): Promise<string>;
 
   "owner()"(overrides?: CallOverrides): Promise<string>;
@@ -268,6 +298,18 @@ export class SimpleCoin extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    mint(
+      _recipient: string,
+      _mintedAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "mint(address,uint256)"(
+      _recipient: string,
+      _mintedAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -343,6 +385,18 @@ export class SimpleCoin extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    mint(
+      _recipient: string,
+      _mintedAmount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "mint(address,uint256)"(
+      _recipient: string,
+      _mintedAmount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -407,6 +461,18 @@ export class SimpleCoin extends Contract {
     "coinBalance(address)"(
       arg0: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    mint(
+      _recipient: string,
+      _mintedAmount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "mint(address,uint256)"(
+      _recipient: string,
+      _mintedAmount: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
