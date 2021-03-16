@@ -2,5 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { SimpleCoin } from "./SimpleCoin";
+export type { SimpleCrowdsale } from "./SimpleCrowdsale";
 
 export { SimpleCoin__factory } from "./factories/SimpleCoin__factory";
+export { SimpleCrowdsale__factory } from "./factories/SimpleCrowdsale__factory";
